@@ -1,0 +1,858 @@
+{% extends "users/basic.html" %}
+
+{% block content %}
+
+<div class="theater-page">
+
+    <!-- Page Header -->
+    <div class="booking-header">
+        <div class="container">
+
+            <div class="header-content">
+
+                <div>
+                    <span class="booking-label">
+                        <i class="fas fa-ticket-alt"></i>
+                        MOVIE TICKETS
+                    </span>
+
+                    <h1>Choose Your Theater</h1>
+
+                    <p>
+                        Select a theater and showtime to continue
+                        with your seat selection.
+                    </p>
+                </div>
+
+                <div class="header-icon">
+                    <i class="fas fa-film"></i>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Theater Section -->
+    <div class="container py-5">
+
+        {% if theaters %}
+
+            <div class="section-header">
+
+                <div>
+                    <span class="section-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        AVAILABLE THEATERS
+                    </span>
+
+                    <h2>Select a Theater</h2>
+                </div>
+
+                <div class="theater-count">
+                    <i class="fas fa-building"></i>
+                    {{ theaters|length }} Theater{{ theaters|length|pluralize }}
+                </div>
+
+            </div>
+
+
+            <!-- Theater Cards -->
+            <div class="theater-list">
+
+                {% for theater in theaters %}
+
+                    <div class="theater-card">
+
+                        <!-- Theater Information -->
+                        <div class="theater-info">
+
+                            <div class="theater-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+
+                            <div class="theater-details">
+
+                                <h3>
+                                    {{ theater.name }}
+                                </h3>
+
+                                {% if theater.city %}
+                                    <p class="location">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        {{ theater.city }}
+                                    </p>
+                                {% endif %}
+
+                                <p class="show-date">
+                                    <i class="far fa-calendar-alt"></i>
+
+                                    {{ theater.time|date:"D, d M Y" }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Theater Facilities -->
+                        <div class="facilities">
+
+                            <span>
+                                <i class="fas fa-mobile-alt"></i>
+                                M-Ticket
+                            </span>
+
+                            <span>
+                                <i class="fas fa-utensils"></i>
+                                Food
+                            </span>
+
+                            <span>
+                                <i class="fas fa-parking"></i>
+                                Parking
+                            </span>
+
+                            <span>
+                                <i class="fas fa-wheelchair"></i>
+                                Accessible
+                            </span>
+
+                            <span>
+                                <i class="fas fa-glasses"></i>
+                                3D
+                            </span>
+
+                        </div>
+
+
+                        <!-- Showtime -->
+                        <div class="showtime-area">
+
+                            <div class="showtime-label">
+                                SHOWTIME
+                            </div>
+
+                            <div class="showtime-row">
+
+                                <div class="time-box">
+
+                                    <i class="far fa-clock"></i>
+
+                                    <strong>
+                                        {{ theater.time|date:"h:i A" }}
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- Book Now -->
+                                <a href="{% url 'book_seats' theater.id %}"
+                                   class="book-button">
+
+                                    <i class="fas fa-ticket-alt"></i>
+
+                                    <span>Book Now</span>
+
+                                    <i class="fas fa-arrow-right arrow"></i>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- Cancellation Information -->
+            <div class="cancellation-note">
+
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+
+                <div>
+                    <strong>Non-cancellable</strong>
+
+                    <p>
+                        Tickets once booked cannot be cancelled or refunded.
+                        Please verify your theater and showtime before booking.
+                    </p>
+                </div>
+
+            </div>
+
+
+        {% else %}
+
+            <!-- No Theaters -->
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    <i class="fas fa-film"></i>
+                </div>
+
+                <h2>No Theaters Available</h2>
+
+                <p>
+                    Sorry, there are currently no theaters available
+                    for this movie.
+                </p>
+
+                <a href="{% url 'movie_list' %}" class="back-button">
+
+                    <i class="fas fa-arrow-left"></i>
+
+                    Browse Movies
+
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- Font Awesome -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+<style>
+
+/* =========================================
+   PAGE
+========================================= */
+
+.theater-page {
+    min-height: 80vh;
+    background: #f5f7fb;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.booking-header {
+    background: linear-gradient(
+        135deg,
+        #111827,
+        #312e81
+    );
+
+    color: white;
+    padding: 45px 0;
+}
+
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.booking-label {
+    display: inline-block;
+
+    padding: 7px 14px;
+
+    border-radius: 30px;
+
+    background: rgba(255,255,255,0.12);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 12px;
+}
+
+
+.booking-label i {
+    margin-right: 6px;
+}
+
+
+.booking-header h1 {
+    font-size: 38px;
+
+    font-weight: 800;
+
+    margin: 0 0 10px;
+}
+
+
+.booking-header p {
+    color: #cbd5e1;
+
+    margin: 0;
+
+    font-size: 16px;
+}
+
+
+.header-icon {
+    width: 85px;
+    height: 85px;
+
+    border-radius: 22px;
+
+    background: rgba(255,255,255,0.1);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 38px;
+
+    color: #c4b5fd;
+}
+
+
+/* =========================================
+   SECTION HEADER
+========================================= */
+
+.section-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: end;
+
+    margin-bottom: 28px;
+}
+
+
+.section-label {
+    color: #6366f1;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+.section-label i {
+    margin-right: 5px;
+}
+
+
+.section-header h2 {
+    margin: 7px 0 0;
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+    color: #1f2937;
+}
+
+
+.theater-count {
+    background: white;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    color: #4f46e5;
+
+    font-weight: 600;
+
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+
+.theater-count i {
+    margin-right: 6px;
+}
+
+
+/* =========================================
+   THEATER LIST
+========================================= */
+
+.theater-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+
+/* =========================================
+   THEATER CARD
+========================================= */
+
+.theater-card {
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    border: 1px solid #edf0f5;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+
+    transition: all 0.25s ease;
+}
+
+
+.theater-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow: 0 12px 30px rgba(0,0,0,0.10);
+}
+
+
+/* =========================================
+   THEATER INFORMATION
+========================================= */
+
+.theater-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 17px;
+
+    margin-bottom: 18px;
+}
+
+
+.theater-icon {
+    width: 62px;
+    height: 62px;
+
+    border-radius: 15px;
+
+    background: #eef2ff;
+
+    color: #4f46e5;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 25px;
+
+    flex-shrink: 0;
+}
+
+
+.theater-details h3 {
+    margin: 0 0 6px;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    color: #1f2937;
+}
+
+
+.location {
+    margin: 0 0 5px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+.location i {
+    color: #ef4444;
+
+    margin-right: 5px;
+}
+
+
+.show-date {
+    margin: 0;
+
+    color: #9ca3af;
+
+    font-size: 13px;
+}
+
+
+.show-date i {
+    margin-right: 5px;
+}
+
+
+/* =========================================
+   FACILITIES
+========================================= */
+
+.facilities {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    padding: 15px 0;
+
+    border-top: 1px solid #f0f1f4;
+
+    border-bottom: 1px solid #f0f1f4;
+
+    margin-bottom: 18px;
+}
+
+
+.facilities span {
+    padding: 7px 11px;
+
+    border-radius: 7px;
+
+    background: #f8fafc;
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+.facilities i {
+    color: #6366f1;
+
+    margin-right: 4px;
+}
+
+
+/* =========================================
+   SHOWTIME
+========================================= */
+
+.showtime-area {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+.showtime-label {
+    color: #94a3b8;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 7px;
+}
+
+
+.showtime-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+.time-box {
+    min-width: 125px;
+
+    padding: 11px 15px;
+
+    border: 1px solid #e5e7eb;
+
+    background: #f8fafc;
+
+    border-radius: 10px;
+
+    text-align: center;
+}
+
+
+.time-box i {
+    color: #6366f1;
+
+    margin-right: 5px;
+}
+
+
+.time-box strong {
+    color: #1f2937;
+}
+
+
+/* =========================================
+   BOOK BUTTON
+========================================= */
+
+.book-button {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 12px 20px;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #7c3aed
+    );
+
+    color: white !important;
+
+    text-decoration: none !important;
+
+    font-weight: 600;
+
+    transition: all 0.25s ease;
+}
+
+
+.book-button:hover {
+    transform: translateX(3px);
+
+    box-shadow:
+        0 7px 20px rgba(79,70,229,0.3);
+}
+
+
+.book-button .arrow {
+    font-size: 12px;
+
+    margin-left: 3px;
+}
+
+
+/* =========================================
+   CANCELLATION NOTE
+========================================= */
+
+.cancellation-note {
+    display: flex;
+
+    gap: 13px;
+
+    align-items: flex-start;
+
+    margin-top: 25px;
+
+    padding: 18px;
+
+    border-radius: 12px;
+
+    background: #fff8e6;
+
+    border: 1px solid #ffe3a3;
+}
+
+
+.warning-icon {
+    color: #f59e0b;
+
+    font-size: 20px;
+}
+
+
+.cancellation-note strong {
+    color: #92400e;
+}
+
+
+.cancellation-note p {
+    margin: 4px 0 0;
+
+    color: #92400e;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.empty-state {
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 60px 25px;
+
+    text-align: center;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+}
+
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+
+    margin: 0 auto 20px;
+
+    border-radius: 50%;
+
+    background: #eef2ff;
+
+    color: #6366f1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 32px;
+}
+
+
+.empty-state h2 {
+    font-weight: 700;
+
+    color: #1f2937;
+}
+
+
+.empty-state p {
+    color: #6b7280;
+
+    margin-bottom: 25px;
+}
+
+
+.back-button {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 11px 20px;
+
+    border-radius: 9px;
+
+    background: #4f46e5;
+
+    color: white !important;
+
+    text-decoration: none !important;
+
+    font-weight: 600;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .booking-header {
+        padding: 35px 0;
+    }
+
+
+    .booking-header h1 {
+        font-size: 29px;
+    }
+
+
+    .header-icon {
+        display: none;
+    }
+
+
+    .section-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+
+    .theater-card {
+        padding: 20px;
+    }
+
+
+    .showtime-area {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .showtime-row {
+        width: 100%;
+
+        justify-content: space-between;
+    }
+
+
+    .book-button {
+        justify-content: center;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .showtime-row {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+
+    .time-box {
+        width: 100%;
+    }
+
+
+    .book-button {
+        width: 100%;
+    }
+
+
+    .facilities span {
+        font-size: 11px;
+    }
+
+}
+
+</style>
+
+{% endblock %}

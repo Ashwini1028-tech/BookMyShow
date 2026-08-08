@@ -1,0 +1,52 @@
+{% extends "users/basic.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <div class="card border-0 shadow-lg text-center">
+
+                <div class="card-body p-5">
+
+                    <div class="mb-4">
+                        <i class="fas fa-lock"
+                           style="font-size: 65px; color: #dc3545;">
+                        </i>
+                    </div>
+
+                    <h2 class="fw-bold mb-3">
+                        Admin Access Required
+                    </h2>
+
+                    <p class="text-muted mb-4">
+                        The Admin Dashboard is available only to
+                        authorized administrators.
+                    </p>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Admin login credentials are provided in the
+                        project evaluation report.
+                    </div>
+
+                    <a href="{% url 'movie_list' %}"
+                       class="btn btn-primary px-4">
+                        <i class="fas fa-film me-2"></i>
+                        Explore Movies
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,245 @@
+{% extends "users/basic.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7 col-lg-6">
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <!-- Header -->
+                <div class="card-header text-center text-white py-4"
+                     style="background: linear-gradient(135deg, #0d6efd, #6610f2);">
+
+                    <div style="font-size: 45px;">🎟️</div>
+
+                    <h2 class="fw-bold mb-1">
+                        BookMySeat
+                    </h2>
+
+                    <p class="mb-0 opacity-75">
+                        Secure Movie Ticket Payment
+                    </p>
+
+                </div>
+
+                <!-- Payment Details -->
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+
+                        <h5 class="text-muted mb-2">
+                            You're booking tickets for
+                        </h5>
+
+                        <h3 class="fw-bold">
+                            {{ payment.movie.name }}
+                        </h3>
+
+                    </div>
+
+                    <!-- Booking information -->
+                    <div class="bg-light rounded-3 p-3 mb-4">
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">
+                                🎬 Movie
+                            </span>
+
+                            <strong>
+                                {{ payment.movie.name }}
+                            </strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">
+                                🎭 Theater
+                            </span>
+
+                            <strong>
+                                {{ payment.theater.name }}
+                            </strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">
+                                💰 Amount
+                            </span>
+
+                            <strong class="text-success">
+                                ₹{{ payment.amount }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="text-center mb-4">
+
+                        <p class="text-muted mb-1">
+                            Total Amount
+                        </p>
+
+                        <h1 class="fw-bold text-primary">
+                            ₹{{ payment.amount }}
+                        </h1>
+
+                        <small class="text-muted">
+                            Secure payment powered by Razorpay
+                        </small>
+
+                    </div>
+
+                    <!-- Pay button -->
+                    <button
+                        type="button"
+                        id="pay-button"
+                        class="btn btn-success btn-lg w-100 py-3 fw-bold">
+
+                        🔒 Pay ₹{{ payment.amount }}
+
+                    </button>
+
+                    <div class="text-center mt-3">
+
+                        <small class="text-muted">
+                            🔐 Your payment information is securely processed.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Razorpay Checkout -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const payButton = document.getElementById("pay-button");
+
+    payButton.addEventListener("click", function () {
+
+        const options = {
+
+            key: "{{ razorpay_key }}",
+
+            amount: "{{ razorpay_amount }}",
+
+            currency: "INR",
+
+            name: "BookMySeat",
+
+            description: "Movie Ticket Booking",
+
+            order_id: "{{ payment.razorpay_order_id }}",
+
+            handler: function (response) {
+
+                console.log("Razorpay Success Response:", response);
+
+                /*
+                 * Send Razorpay response to Django
+                 */
+                const url =
+                    "{% url 'payment_success' %}" +
+                    "?payment_id=" +
+                    encodeURIComponent(response.razorpay_payment_id) +
+                    "&order_id=" +
+                    encodeURIComponent(response.razorpay_order_id) +
+                    "&signature=" +
+                    encodeURIComponent(response.razorpay_signature);
+
+                window.location.href = url;
+
+            },
+
+            prefill: {
+
+                name: "{{ request.user.get_full_name|escapejs }}",
+
+                email: "{{ request.user.email|escapejs }}"
+
+            },
+
+            theme: {
+
+                color: "#0d6efd"
+
+            },
+
+            modal: {
+
+                ondismiss: function () {
+
+                    console.log("Razorpay checkout closed.");
+
+                }
+
+            }
+
+        };
+
+        console.log("Razorpay options:", options);
+
+        const razorpay = new Razorpay(options);
+
+        razorpay.on("payment.failed", function (response) {
+
+            console.error(
+                "Razorpay Payment Failed:",
+                response.error
+            );
+
+            /*
+             * Do NOT immediately redirect here.
+             * Show the actual Razorpay error to the user.
+             */
+
+            alert(
+                "Payment failed.\n\n" +
+                "Reason: " +
+                response.error.description
+            );
+
+        });
+
+        razorpay.open();
+
+    });
+
+});
+
+</script>
+
+<style>
+
+.rounded-4 {
+    border-radius: 1.25rem !important;
+}
+
+#pay-button {
+    transition: all 0.2s ease;
+}
+
+#pay-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(25, 135, 84, 0.25);
+}
+
+</style>
+
+{% endblock %}

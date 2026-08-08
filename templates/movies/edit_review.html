@@ -1,0 +1,77 @@
+{% extends "users/basic.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+```
+<h2>✏️ Edit Your Review</h2>
+
+<div class="card mt-3">
+    <div class="card-body">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label><strong>Rating</strong></label>
+
+                <select name="rating"
+                        class="form-control"
+                        required>
+
+                    <option value="5" {% if review.rating == 5 %}selected{% endif %}>
+                        ⭐⭐⭐⭐⭐ 5
+                    </option>
+
+                    <option value="4" {% if review.rating == 4 %}selected{% endif %}>
+                        ⭐⭐⭐⭐ 4
+                    </option>
+
+                    <option value="3" {% if review.rating == 3 %}selected{% endif %}>
+                        ⭐⭐⭐ 3
+                    </option>
+
+                    <option value="2" {% if review.rating == 2 %}selected{% endif %}>
+                        ⭐⭐ 2
+                    </option>
+
+                    <option value="1" {% if review.rating == 1 %}selected{% endif %}>
+                        ⭐ 1
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="form-group mt-3">
+
+                <label><strong>Your Review</strong></label>
+
+                <textarea
+                    name="comment"
+                    class="form-control"
+                    rows="5"
+                    required>{{ review.comment }}</textarea>
+
+            </div>
+
+            <button type="submit"
+                    class="btn btn-success mt-3">
+                Update Review
+            </button>
+
+            <a href="{% url 'movie_detail' review.movie.id %}"
+               class="btn btn-secondary mt-3">
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+</div>
+```
+
+</div>
+
+{% endblock %}

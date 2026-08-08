@@ -1,0 +1,673 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}BookMySeat - Movie Ticket Booking{% endblock %}
+    </title>
+
+    <!-- Bootstrap 4 -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    >
+
+    <style>
+        /* ================================
+           GLOBAL
+        ================================= */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f7fb;
+            color: #212529;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        a {
+            text-decoration: none !important;
+        }
+
+
+        /* ================================
+           NAVBAR
+        ================================= */
+
+        .main-navbar {
+            background: linear-gradient(
+                135deg,
+                #111827,
+                #1f2937,
+                #111827
+            );
+            padding: 12px 0;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+        }
+
+        .navbar-brand {
+            font-size: 25px;
+            font-weight: 800;
+            color: #ffffff !important;
+            letter-spacing: 0.4px;
+        }
+
+        .navbar-brand i {
+            color: #ffcc00;
+            margin-right: 7px;
+        }
+
+        .brand-seat {
+            color: #ffcc00;
+        }
+
+        .navbar-nav .nav-link {
+            color: #e5e7eb !important;
+            font-weight: 600;
+            padding: 10px 14px !important;
+            border-radius: 8px;
+            margin: 0 2px;
+            transition: 0.25s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff !important;
+            transform: translateY(-1px);
+        }
+
+        .navbar-nav .nav-link i {
+            margin-right: 6px;
+        }
+
+
+        /* ================================
+           ADMIN DASHBOARD NAV ITEM
+        ================================= */
+
+        .admin-dashboard-link {
+            background: linear-gradient(
+                135deg,
+                #ffb703,
+                #fb8500
+            );
+            color: #111827 !important;
+            font-weight: 800 !important;
+            box-shadow: 0 4px 12px rgba(251, 133, 0, 0.25);
+        }
+
+        .admin-dashboard-link:hover {
+            background: linear-gradient(
+                135deg,
+                #ffc107,
+                #ff9800
+            ) !important;
+            color: #111827 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(251, 133, 0, 0.35);
+        }
+
+
+        /* ================================
+           USER PROFILE NAV
+        ================================= */
+
+        .profile-link {
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+
+        .logout-link {
+            color: #ffb4b4 !important;
+        }
+
+        .logout-link:hover {
+            background: rgba(220, 53, 69, 0.15) !important;
+            color: #ffdddd !important;
+        }
+
+
+        /* ================================
+           AUTH BUTTONS
+        ================================= */
+
+        .login-btn {
+            border: 1px solid #ffffff;
+            color: #ffffff !important;
+            border-radius: 8px;
+            padding: 8px 16px !important;
+        }
+
+        .login-btn:hover {
+            background: #ffffff !important;
+            color: #111827 !important;
+        }
+
+        .register-btn {
+            background: #ffcc00;
+            color: #111827 !important;
+            border-radius: 8px;
+            padding: 8px 16px !important;
+            font-weight: 700;
+        }
+
+        .register-btn:hover {
+            background: #ffd633 !important;
+            color: #111827 !important;
+        }
+        .dashboard-link {
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 20px;
+    padding: 8px 15px !important;
+    margin-left: 8px;
+    transition: all 0.3s ease;
+}
+
+.dashboard-link:hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateY(-2px);
+}
+
+
+        /* ================================
+           MAIN CONTENT
+        ================================= */
+
+        .main-content {
+            min-height: calc(100vh - 190px);
+            padding-top: 25px;
+            padding-bottom: 45px;
+        }
+
+
+        /* ================================
+           CARDS
+        ================================= */
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+        }
+
+        .card:hover {
+            transition: 0.25s ease;
+        }
+
+
+        /* ================================
+           FOOTER
+        ================================= */
+
+        .main-footer {
+            background: #111827;
+            color: #cbd5e1;
+            padding: 40px 0 20px;
+        }
+
+        .footer-title {
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .main-footer p {
+            color: #9ca3af;
+            line-height: 1.7;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+
+        .footer-links a {
+            color: #9ca3af;
+            transition: 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ffcc00;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            margin-right: 8px;
+            border-radius: 50%;
+            background: #1f2937;
+            color: #ffffff;
+            transition: 0.25s ease;
+        }
+
+        .social-icons a:hover {
+            background: #ffcc00;
+            color: #111827;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            margin-top: 25px;
+            padding-top: 18px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+
+        /* ================================
+           MOBILE NAVBAR
+        ================================= */
+
+        @media (max-width: 991px) {
+
+            .navbar-nav {
+                padding-top: 10px;
+            }
+
+            .navbar-nav .nav-link {
+                margin: 3px 0;
+            }
+
+            .admin-dashboard-link {
+                display: inline-block;
+                margin-top: 5px;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar navbar-expand-lg main-navbar sticky-top">
+
+    <div class="container">
+
+        <!-- Brand -->
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <i class="fas fa-film"></i>
+            BookMy<span class="brand-seat">Seat</span>
+        </a>
+
+
+        <!-- Mobile Toggle -->
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <i class="fas fa-bars text-white"></i>
+        </button>
+
+
+        <!-- Navbar Content -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+
+            <!-- Left Menu -->
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'movie_list' %}">
+                        <i class="fas fa-video"></i>
+                        Movies
+                    </a>
+                </li>
+
+
+                {% if user.is_authenticated %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile' %}">
+                        <i class="fas fa-user-circle"></i>
+                        My Profile
+                    </a>
+                </li>
+
+
+                <!-- =========================================
+                     ADMIN DASHBOARD
+                     Visible only to staff/admin users
+                ========================================== -->
+
+                {% if user.is_staff %}
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link admin-dashboard-link"
+                        href="{% url 'admin_dashboard' %}"
+                    >
+                        <i class="fas fa-chart-line"></i>
+                        Admin Dashboard
+                    </a>
+                </li>
+
+                {% endif %}
+
+                {% endif %}
+
+            </ul>
+
+
+            <!-- Right Menu -->
+            <ul class="navbar-nav ml-auto">
+
+                {% if user.is_authenticated %}
+
+                <li class="nav-item">
+                    <span class="nav-link">
+                        <i class="fas fa-user"></i>
+                        Hi, {{ user.username }}
+                    </span>
+                </li>
+                {% if user.is_authenticated %}
+    {% if user.is_staff %}
+        <li class="nav-item">
+            <a class="nav-link dashboard-link"
+               href="{% url 'admin_dashboard' %}">
+                <i class="fas fa-chart-line me-1"></i>
+                Dashboard
+            </a>
+        </li>
+    {% else %}
+        <li class="nav-item">
+            <a class="nav-link dashboard-link"
+               href="{% url 'admin_dashboard' %}">
+                <i class="fas fa-chart-line me-1"></i>
+                Dashboard
+            </a>
+        </li>
+    {% endif %}
+{% else %}
+    <li class="nav-item">
+        <a class="nav-link dashboard-link"
+           href="{% url 'admin_dashboard' %}">
+            <i class="fas fa-chart-line me-1"></i>
+            Dashboard
+        </a>
+    </li>
+{% endif %}
+
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link logout-link"
+                        href="{% url 'logout' %}"
+                    >
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </li>
+
+
+                {% else %}
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link login-btn"
+                        href="{% url 'login' %}"
+                    >
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </a>
+                </li>
+
+
+                <li class="nav-item ml-lg-2">
+                    <a
+                        class="nav-link register-btn"
+                        href="{% url 'register' %}"
+                    >
+                        <i class="fas fa-user-plus"></i>
+                        Register
+                    </a>
+                </li>
+
+                {% endif %}
+
+            </ul>
+
+        </div>
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main class="main-content">
+
+    <div class="container">
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div
+                    class="alert
+                    {% if message.tags %}
+                        alert-{{ message.tags }}
+                    {% else %}
+                        alert-info
+                    {% endif %}
+                    alert-dismissible fade show"
+                    role="alert"
+                >
+
+                    {% if message.tags == "success" %}
+                        <i class="fas fa-check-circle mr-2"></i>
+
+                    {% elif message.tags == "error" %}
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+
+                    {% else %}
+                        <i class="fas fa-info-circle mr-2"></i>
+
+                    {% endif %}
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="close"
+                        data-dismiss="alert"
+                        aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="main-footer">
+
+    <div class="container">
+
+        <div class="row">
+
+            <!-- About -->
+            <div class="col-md-5 mb-4">
+
+                <h5 class="footer-title">
+                    <i class="fas fa-film text-warning mr-2"></i>
+                    BookMySeat
+                </h5>
+
+                <p>
+                    Your simple and convenient movie ticket booking
+                    platform. Discover movies, explore theaters,
+                    select your seats and book your favorite shows.
+                </p>
+
+                <div class="social-icons">
+
+                    <a href="#" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+
+                    <a href="#" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+
+                    <a href="#" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+
+                    <a href="#" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- Quick Links -->
+            <div class="col-md-3 mb-4">
+
+                <h5 class="footer-title">
+                    Quick Links
+                </h5>
+
+                <ul class="footer-links">
+
+                    <li>
+                        <a href="{% url 'home' %}">
+                            Home
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'movie_list' %}">
+                            Movies
+                        </a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+
+                    <li>
+                        <a href="{% url 'profile' %}">
+                            My Profile
+                        </a>
+                    </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </div>
+
+
+            <!-- Contact -->
+            <div class="col-md-4 mb-4">
+
+                <h5 class="footer-title">
+                    Contact
+                </h5>
+
+                <p>
+                    <i class="fas fa-envelope text-warning mr-2"></i>
+                    support@bookmyseat.com
+                </p>
+
+                <p>
+                    <i class="fas fa-phone text-warning mr-2"></i>
+                    +91 98765 43210
+                </p>
+
+                <p>
+                    <i class="fas fa-map-marker-alt text-warning mr-2"></i>
+                    Bengaluru, Karnataka, India
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p class="mb-0">
+                © {% now "Y" %} BookMySeat.
+                All rights reserved.
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+{% block extra_js %}
+{% endblock %}
+
+</body>
+</html>

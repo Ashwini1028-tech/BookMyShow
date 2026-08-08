@@ -1,0 +1,108 @@
+{% extends "users/basic.html" %}
+
+{% block content %}
+
+<style>
+    .logout-page {
+        min-height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f7fb;
+        padding: 40px 15px;
+    }
+
+    .logout-card {
+        max-width: 500px;
+        width: 100%;
+        background: white;
+        border-radius: 22px;
+        padding: 45px 35px;
+        text-align: center;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.10);
+    }
+
+    .logout-icon {
+        width: 90px;
+        height: 90px;
+        margin: 0 auto 25px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .logout-card h2 {
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 12px;
+    }
+
+    .logout-card p {
+        color: #6b7280;
+        font-size: 16px;
+        margin-bottom: 28px;
+    }
+
+    .login-btn {
+        display: inline-block;
+        padding: 12px 30px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #4f46e5, #6366f1);
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+    }
+
+    .logout-note {
+        margin-top: 20px;
+        font-size: 13px;
+        color: #9ca3af;
+    }
+</style>
+
+
+<div class="logout-page">
+
+    <div class="logout-card">
+
+        <!-- Logout Icon -->
+        <div class="logout-icon">
+            <i class="fas fa-sign-out-alt"></i>
+        </div>
+
+        <!-- Message -->
+        <h2>You have been logged out</h2>
+
+        <p>
+            Thank you for using <strong>BookMySeat</strong>.
+            Your session has been securely ended.
+        </p>
+
+        <!-- Login Button -->
+        <a href="{% url 'login' %}" class="login-btn">
+            <i class="fas fa-sign-in-alt mr-2"></i>
+            Login Again
+        </a>
+
+        <div class="logout-note">
+            🎬 Ready to book your next movie?
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,654 @@
+{% extends "users/basic.html" %}
+
+{% block content %}
+
+<style>
+    /* ================================
+       MAIN BOOKING PAGE
+    ================================= */
+
+    .booking-wrapper {
+        max-width: 1100px;
+        margin: 35px auto;
+        padding: 0 15px;
+    }
+
+    .booking-header {
+        background: linear-gradient(135deg, #111827, #1d4ed8);
+        color: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    .booking-header h2 {
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .booking-header p {
+        margin: 5px 0;
+        opacity: 0.92;
+    }
+
+
+    /* ================================
+       SEAT CARD
+    ================================= */
+
+    .seat-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .seat-title {
+        text-align: center;
+        font-weight: 800;
+        color: #111827;
+        margin-bottom: 25px;
+    }
+
+
+    /* ================================
+       SCREEN
+    ================================= */
+
+    .screen-container {
+        text-align: center;
+        margin: 20px auto 40px;
+    }
+
+    .screen {
+        width: 75%;
+        height: 55px;
+        margin: auto;
+
+        background: linear-gradient(
+            to bottom,
+            #dbeafe,
+            #93c5fd
+        );
+
+        border-radius: 50% 50% 10px 10px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #1e3a8a;
+        font-weight: 800;
+        letter-spacing: 2px;
+
+        box-shadow:
+            0 8px 20px rgba(37,99,235,0.25);
+
+        transform: perspective(300px)
+                   rotateX(-10deg);
+    }
+
+    .screen-text {
+        margin-top: 12px;
+        color: #6b7280;
+        font-size: 13px;
+    }
+
+
+    /* ================================
+       SEAT AREA
+    ================================= */
+
+    .seat-area {
+        max-width: 850px;
+        margin: auto;
+    }
+
+    .seat-row {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+
+    /* ================================
+       SEAT
+    ================================= */
+
+    .seat {
+        position: relative;
+        height: 48px;
+    }
+
+    .seat input[type="checkbox"] {
+        display: none;
+    }
+
+    .seat label {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 10px;
+
+        background: #ecfdf5;
+        border: 2px solid #22c55e;
+
+        color: #166534;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition: all 0.2s ease;
+    }
+
+    .seat label:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 15px rgba(0,0,0,0.15);
+    }
+
+
+    /* Selected */
+
+    .seat input[type="checkbox"]:checked + label {
+        background: linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
+
+        border-color: #2563eb;
+        color: white;
+
+        transform: scale(1.06);
+
+        box-shadow:
+            0 6px 16px rgba(37,99,235,0.35);
+    }
+
+
+    /* Booked / Reserved */
+
+    .seat input[type="checkbox"]:disabled + label {
+        cursor: not-allowed;
+    }
+
+    .seat.booked label {
+        background: #fee2e2;
+        border-color: #ef4444;
+        color: #991b1b;
+
+        cursor: not-allowed;
+    }
+
+    .seat.reserved label {
+        background: #fef3c7;
+        border-color: #f59e0b;
+        color: #92400e;
+
+        cursor: not-allowed;
+        opacity: 0.9;
+    }
+
+
+    /* ================================
+       LEGEND
+    ================================= */
+
+    .legend {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        flex-wrap: wrap;
+
+        gap: 25px;
+
+        margin: 35px 0;
+        padding: 18px;
+
+        background: #f8fafc;
+
+        border-radius: 14px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        font-size: 14px;
+        font-weight: 600;
+
+        color: #374151;
+    }
+
+    .legend-box {
+        width: 23px;
+        height: 23px;
+
+        border-radius: 6px;
+    }
+
+    .legend-available {
+        background: #ecfdf5;
+        border: 2px solid #22c55e;
+    }
+
+    .legend-selected {
+        background: #2563eb;
+        border: 2px solid #2563eb;
+    }
+
+    .legend-reserved {
+        background: #fef3c7;
+        border: 2px solid #f59e0b;
+    }
+
+    .legend-booked {
+        background: #fee2e2;
+        border: 2px solid #ef4444;
+    }
+
+
+    /* ================================
+       ERROR MESSAGE
+    ================================= */
+
+    .error-message {
+        background: #fee2e2;
+        color: #991b1b;
+
+        border: 1px solid #fecaca;
+
+        border-radius: 12px;
+
+        padding: 15px 20px;
+
+        margin-bottom: 20px;
+
+        font-weight: 600;
+    }
+
+
+    /* ================================
+       BOOK BUTTON
+    ================================= */
+
+    .booking-action {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .book-button {
+        min-width: 260px;
+
+        padding: 14px 30px;
+
+        border: none;
+        border-radius: 12px;
+
+        background: linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
+
+        color: white;
+
+        font-size: 17px;
+        font-weight: 700;
+
+        box-shadow:
+            0 8px 20px rgba(37,99,235,0.25);
+
+        transition: all 0.2s ease;
+    }
+
+    .book-button:hover {
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 12px 25px rgba(37,99,235,0.35);
+    }
+
+
+    /* ================================
+       MOBILE
+    ================================= */
+
+    @media (max-width: 768px) {
+
+        .booking-wrapper {
+            margin: 20px auto;
+        }
+
+        .booking-header {
+            padding: 22px;
+        }
+
+        .seat-card {
+            padding: 18px;
+        }
+
+        .screen {
+            width: 90%;
+        }
+
+        .seat-row {
+            grid-template-columns: repeat(5, 1fr);
+            gap: 9px;
+        }
+
+        .seat {
+            height: 43px;
+        }
+
+        .seat label {
+            font-size: 12px;
+        }
+
+        .legend {
+            gap: 15px;
+        }
+
+        .book-button {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<div class="booking-wrapper">
+
+
+    <!-- ================================
+         MOVIE / THEATER INFORMATION
+    ================================= -->
+
+    <div class="booking-header">
+
+        <h2>
+            🎬 {{ theaters.movie.name }}
+        </h2>
+
+        <p>
+            🎭 <strong>{{ theaters.name }}</strong>
+        </p>
+
+        <p>
+            📍 {{ theaters.city }}
+        </p>
+
+        <p>
+            🕐 {{ theaters.time }}
+        </p>
+
+        <p>
+            🎟️ Ticket Price:
+            <strong>₹{{ theaters.movie.ticket_price }}</strong>
+        </p>
+
+    </div>
+
+
+    <!-- ================================
+         ERROR
+    ================================= -->
+
+    {% if error %}
+
+        <div class="error-message">
+            ⚠️ {{ error }}
+        </div>
+
+    {% endif %}
+
+
+    <!-- ================================
+         SEAT CARD
+    ================================= -->
+
+    <div class="seat-card">
+
+        <h3 class="seat-title">
+            💺 Select Your Seats
+        </h3>
+
+
+        <!-- SCREEN -->
+
+        <div class="screen-container">
+
+            <div class="screen">
+                SCREEN
+            </div>
+
+            <div class="screen-text">
+                All eyes this way please!
+            </div>
+
+        </div>
+
+
+        <!-- ================================
+             SEATS
+        ================================= -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="seat-area">
+
+                <div class="seat-row">
+
+                {% for seat in seats %}
+
+                    {% if seat.is_booked %}
+
+                        <div class="seat booked">
+
+                            <input
+                                type="checkbox"
+                                disabled
+                            >
+
+                            <label>
+                                {{ seat.seat_number }}
+                            </label>
+
+                        </div>
+
+                    {% elif seat.is_reserved %}
+
+                        <div class="seat reserved">
+
+                            <input
+                                type="checkbox"
+                                disabled
+                            >
+
+                            <label>
+                                {{ seat.seat_number }}
+                            </label>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="seat">
+
+                            <input
+                                type="checkbox"
+                                name="seats"
+                                value="{{ seat.id }}"
+                                id="seat-{{ seat.id }}"
+                            >
+
+                            <label for="seat-{{ seat.id }}">
+                                {{ seat.seat_number }}
+                            </label>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if forloop.counter|divisibleby:10 %}
+
+                        </div>
+
+                        {% if not forloop.last %}
+
+                            <div class="seat-row">
+
+                        {% endif %}
+
+                    {% endif %}
+
+                {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================
+                 LEGEND
+            ================================= -->
+
+            <div class="legend">
+
+                <div class="legend-item">
+
+                    <div class="legend-box legend-available"></div>
+
+                    Available
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <div class="legend-box legend-selected"></div>
+
+                    Selected
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <div class="legend-box legend-reserved"></div>
+
+                    Reserved
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <div class="legend-box legend-booked"></div>
+
+                    Booked
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================
+                 BOOK BUTTON
+            ================================= -->
+
+            <div class="booking-action">
+
+                <button
+                    type="submit"
+                    class="book-button"
+                    id="bookButton"
+                >
+                    💳 Book Selected Seats
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const checkboxes =
+        document.querySelectorAll(
+            'input[name="seats"]'
+        );
+
+    const bookButton =
+        document.getElementById("bookButton");
+
+
+    function updateButton() {
+
+        let selected = 0;
+
+        checkboxes.forEach(function (checkbox) {
+
+            if (checkbox.checked) {
+                selected++;
+            }
+
+        });
+
+        if (selected > 0) {
+
+            bookButton.innerHTML =
+                "💳 Book " +
+                selected +
+                " Seat" +
+                (selected > 1 ? "s" : "");
+
+        } else {
+
+            bookButton.innerHTML =
+                "💳 Select Seats to Continue";
+
+        }
+
+    }
+
+
+    checkboxes.forEach(function (checkbox) {
+
+        checkbox.addEventListener(
+            "change",
+            updateButton
+        );
+
+    });
+
+
+    updateButton();
+
+});
+
+</script>
+
+
+{% endblock %}

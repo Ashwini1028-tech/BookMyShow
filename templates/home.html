@@ -1,0 +1,965 @@
+{% extends "users/basic.html" %}
+
+{% block content %}
+
+<style>
+    body {
+        background: #f5f5f5;
+    }
+
+    .hero-section {
+        position: relative;
+        min-height: 390px;
+        border-radius: 0 0 24px 24px;
+        overflow: hidden;
+        background:
+            linear-gradient(90deg, rgba(10,10,20,0.95), rgba(10,10,20,0.55), rgba(10,10,20,0.15)),
+            linear-gradient(135deg, #151522, #3a1f45);
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+
+    .hero-content {
+        max-width: 650px;
+        padding: 55px;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.25);
+        padding: 7px 15px;
+        border-radius: 20px;
+        font-size: 13px;
+        margin-bottom: 18px;
+    }
+
+    .hero-title {
+        font-size: 46px;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 15px;
+    }
+
+    .hero-text {
+        font-size: 18px;
+        color: #ddd;
+        margin-bottom: 25px;
+    }
+
+    .hero-btn {
+        background: #e91e63;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .hero-btn:hover {
+        background: #c2185b;
+        color: white;
+        text-decoration: none;
+    }
+
+    .section-heading {
+        margin: 38px 0 20px;
+    }
+
+    .section-heading h2 {
+        font-size: 25px;
+        font-weight: 750;
+        margin: 0;
+        color: #222;
+    }
+
+    .section-heading p {
+        color: #777;
+        margin: 5px 0 0;
+        font-size: 14px;
+    }
+
+    .movie-card {
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        border: none;
+        height: 100%;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+        transition: all 0.3s ease;
+    }
+
+    .movie-card:hover {
+        transform: translateY(-7px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+    }
+
+    .movie-image {
+        width: 100%;
+        height: 330px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #29293d, #55556d);
+    }
+
+    .no-poster {
+        height: 330px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background: linear-gradient(135deg, #29293d, #55556d);
+        color: white;
+    }
+
+    .no-poster-icon {
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
+
+    .movie-content {
+        padding: 16px;
+    }
+
+    .movie-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .movie-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+
+    .meta-badge {
+        font-size: 11px;
+        padding: 5px 9px;
+        border-radius: 12px;
+        background: #f1f1f1;
+        color: #555;
+    }
+
+    .rating-badge {
+        background: #198754;
+        color: white;
+        font-weight: 600;
+    }
+
+    .book-btn {
+        width: 100%;
+        background: #e91e63;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+    }
+
+    .book-btn:hover {
+        background: #c2185b;
+        color: white;
+        text-decoration: none;
+    }
+
+    .login-box {
+        background: white;
+        border-radius: 14px;
+        padding: 18px 22px;
+        margin-top: 25px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+        border-left: 4px solid #e91e63;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 14px;
+        padding: 25px;
+        height: 100%;
+        text-align: center;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+        transition: 0.3s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        font-size: 35px;
+        margin-bottom: 12px;
+    }
+
+    .feature-card h5 {
+        font-weight: 700;
+    }
+
+    .feature-card p {
+        color: #777;
+        font-size: 14px;
+        margin-bottom: 0;
+    }
+
+    .empty-state {
+        background: white;
+        padding: 45px;
+        border-radius: 15px;
+        text-align: center;
+        color: #777;
+    }
+
+    .language-strip {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+    }
+
+    .language-pill {
+        background: white;
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-size: 13px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        color: #444;
+    }
+
+    @media (max-width: 768px) {
+        .hero-content {
+            padding: 35px 25px;
+        }
+
+        .hero-title {
+            font-size: 34px;
+        }
+
+        .movie-image,
+        .no-poster {
+            height: 280px;
+        }
+    }
+</style>
+
+
+<!-- ================= HERO ================= -->
+
+<div class="hero-section">
+
+    <div class="hero-content">
+
+        <span class="hero-badge">
+            🎬 BOOKMYSEAT
+        </span>
+
+        <h1 class="hero-title">
+            Your Seat.<br>
+            Your Movie.<br>
+            Your Experience.
+        </h1>
+
+        <p class="hero-text">
+            Discover movies, explore theaters and book your favorite seats
+            quickly and securely.
+        </p>
+
+        <a href="{% url 'movie_list' %}" class="hero-btn">
+            🎟️ Explore Movies
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<div class="container">
+
+
+    <!-- LOGIN MESSAGE -->
+
+    {% if not user.is_authenticated %}
+
+    <div class="login-box">
+
+        <strong>Welcome to BookMySeat!</strong>
+
+        <p class="mb-0 mt-1">
+            <a href="{% url 'login' %}">Login</a>
+            or
+            <a href="{% url 'register' %}">create an account</a>
+            to book your favorite movies and seats.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================= MOVIES ================= -->
+
+    <div class="section-heading">
+
+        <h2>🎬 Recommended Movies</h2>
+
+        <p>
+            Explore the latest movies and book your seats.
+        </p>
+
+    </div>
+
+
+    {% if movies %}
+
+    <div class="row">
+
+        {% for movie in movies|slice:":8" %}
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+
+            <div class="movie-card">
+
+                <a href="{% url 'theater_list' movie.id %}"
+                   style="text-decoration:none;">
+
+                    {% if movie.image %}
+
+                        <img
+                            src="{{ movie.image.url }}"
+                            class="movie-image"
+                            alt="{{ movie.name }}"
+                        >
+
+                    {% else %}
+
+                        <div class="no-poster">
+
+                            <div class="no-poster-icon">
+                                🎬
+                            </div>
+
+                            <strong>
+                                {{ movie.name }}
+                            </strong>
+
+                            <small>
+                                Poster unavailable
+                            </small>
+
+                        </div>
+
+                    {% endif %}
+
+                </a>
+
+
+                <div class="movie-content">
+
+                    <div class="movie-title">
+                        {{ movie.name }}
+                    </div>
+
+
+                    <div class="movie-meta">
+
+                        {% if movie.language %}
+
+                        <span class="meta-badge">
+                            {{ movie.language }}
+                        </span>
+
+                        {% endif %}
+
+
+                        {% if movie.genre %}
+
+                        <span class="meta-badge">
+                            {{ movie.genre }}
+                        </span>
+
+                        {% endif %}
+
+
+                        {% if movie.rating %}
+
+                        <span class="meta-badge rating-badge">
+                            ⭐ {{ movie.rating }}
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if movie.description %}
+
+                    <p
+                        style="
+                        font-size:13px;
+                        color:#777;
+                        min-height:38px;
+                        margin-bottom:12px;
+                        "
+                    >
+                        {{ movie.description|truncatechars:70 }}
+                    </p>
+
+                    {% endif %}
+
+
+                    <a
+                        href="{% url 'theater_list' movie.id %}"
+                        class="book-btn"
+                    >
+                        🎟️ Book Now
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+    <!-- =========================================================
+     BOOKING & TICKET FEATURES
+========================================================= -->
+
+<section class="ticket-features-section py-5">
+    <div class="container">
+
+        <!-- Section Heading -->
+        <div class="text-center mb-5">
+            <span class="feature-badge">
+                <i class="fas fa-star me-2"></i>BookMySeat Features
+            </span>
+
+            <h2 class="feature-title mt-3">
+                Everything You Need After Booking
+            </h2>
+
+            <p class="feature-subtitle">
+                Book your favorite movie and manage your tickets easily
+                with our smart booking features.
+            </p>
+        </div>
+
+        <!-- Feature Cards -->
+        <div class="row g-4 justify-content-center">
+
+            <!-- Download Ticket -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ticket-feature-card">
+
+                    <div class="feature-icon download-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+
+                    <h4>Download Ticket</h4>
+
+                    <p>
+                        Download your confirmed movie ticket as a
+                        professional PDF whenever you need it.
+                    </p>
+
+                    <div class="feature-label">
+                        <i class="fas fa-check-circle me-2"></i>
+                        PDF Ticket
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Email Ticket -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ticket-feature-card">
+
+                    <div class="feature-icon email-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+
+                    <h4>Email Ticket</h4>
+
+                    <p>
+                        Send your confirmed ticket directly to your
+                        registered email address with one click.
+                    </p>
+
+                    <div class="feature-label">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Email Delivery
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- QR Code -->
+            <div class="col-md-6 col-lg-4">
+                <div class="ticket-feature-card">
+
+                    <div class="feature-icon qr-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+
+                    <h4>QR Code Ticket</h4>
+
+                    <p>
+                        Every ticket includes a unique QR code that
+                        can be presented at the theater entrance.
+                    </p>
+
+                    <div class="feature-label">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Quick Verification
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Booking Flow -->
+        <div class="booking-flow mt-5">
+
+            <div class="flow-title">
+                <i class="fas fa-route me-2"></i>
+                Simple Booking Experience
+            </div>
+
+            <div class="row text-center mt-4">
+
+                <div class="col-6 col-md-3 flow-step">
+                    <div class="flow-number">1</div>
+                    <h6>Choose Movie</h6>
+                    <small>Explore movies</small>
+                </div>
+
+                <div class="col-6 col-md-3 flow-step">
+                    <div class="flow-number">2</div>
+                    <h6>Select Seats</h6>
+                    <small>Pick your seats</small>
+                </div>
+
+                <div class="col-6 col-md-3 flow-step">
+                    <div class="flow-number">3</div>
+                    <h6>Complete Booking</h6>
+                    <small>Confirm your booking</small>
+                </div>
+
+                <div class="col-6 col-md-3 flow-step">
+                    <div class="flow-number">4</div>
+                    <h6>Get Your Ticket</h6>
+                    <small>Download or email</small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================================================
+     TICKET FEATURES CSS
+========================================================= -->
+
+<style>
+
+.ticket-features-section {
+    background: linear-gradient(
+        135deg,
+        #f8f9ff 0%,
+        #ffffff 50%,
+        #f4f7ff 100%
+    );
+}
+
+/* Badge */
+
+.feature-badge {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 30px;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Heading */
+
+.feature-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #172033;
+}
+
+.feature-subtitle {
+    max-width: 650px;
+    margin: 0 auto;
+    color: #6c757d;
+    font-size: 16px;
+}
+
+
+/* Feature Card */
+
+.ticket-feature-card {
+    height: 100%;
+    padding: 32px 25px;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+}
+
+.ticket-feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    border-color: #cfd6ff;
+}
+
+
+/* Icons */
+
+.feature-icon {
+    width: 75px;
+    height: 75px;
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    font-size: 30px;
+}
+
+.download-icon {
+    background: #fff0f0;
+    color: #dc3545;
+}
+
+.email-icon {
+    background: #eef7ff;
+    color: #0d6efd;
+}
+
+.qr-icon {
+    background: #f0fff4;
+    color: #198754;
+}
+
+
+/* Card Text */
+
+.ticket-feature-card h4 {
+    margin-bottom: 12px;
+    font-weight: 700;
+    color: #212529;
+}
+
+.ticket-feature-card p {
+    color: #6c757d;
+    line-height: 1.7;
+    min-height: 82px;
+}
+
+
+/* Feature Label */
+
+.feature-label {
+    display: inline-block;
+
+    padding: 7px 14px;
+
+    border-radius: 20px;
+
+    background: #f8f9fa;
+
+    color: #495057;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* Booking Flow */
+
+.booking-flow {
+    padding: 30px;
+    border-radius: 20px;
+
+    background: #ffffff;
+
+    border: 1px solid #e9ecef;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.flow-title {
+    text-align: center;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    color: #172033;
+}
+
+
+/* Flow Steps */
+
+.flow-step {
+    position: relative;
+    padding: 15px;
+}
+
+.flow-number {
+    width: 45px;
+    height: 45px;
+
+    margin: 0 auto 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #0d6efd;
+    color: #ffffff;
+
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.flow-step h6 {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.flow-step small {
+    color: #6c757d;
+}
+
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .feature-title {
+        font-size: 26px;
+    }
+
+    .feature-subtitle {
+        font-size: 14px;
+    }
+
+    .ticket-feature-card {
+        padding: 25px 20px;
+    }
+
+    .ticket-feature-card p {
+        min-height: auto;
+    }
+
+    .booking-flow {
+        padding: 20px 10px;
+    }
+
+}
+
+</style>
+
+
+    <!-- VIEW ALL -->
+
+    <div class="text-center mt-2 mb-4">
+
+        <a
+            href="{% url 'movie_list' %}"
+            class="btn btn-outline-dark"
+            style="border-radius:22px;padding:9px 25px;"
+        >
+            View All Movies →
+        </a>
+
+    </div>
+
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <h4>🎬 No movies available</h4>
+
+        <p>
+            Movies will appear here once they are added.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+
+    <!-- ================= LANGUAGES ================= -->
+
+    <div class="section-heading">
+
+        <h2>🌐 Browse by Language</h2>
+
+        <p>
+            Discover movies in your favorite language.
+        </p>
+
+    </div>
+
+
+    <div class="language-strip">
+
+        <span class="language-pill">🇮🇳 Kannada</span>
+
+        <span class="language-pill">🇮🇳 Hindi</span>
+
+        <span class="language-pill">🇮🇳 Tamil</span>
+
+        <span class="language-pill">🇮🇳 Telugu</span>
+
+        <span class="language-pill">🇬🇧 English</span>
+
+    </div>
+
+
+
+    <!-- ================= WHY BOOKMYSEAT ================= -->
+
+    <div class="section-heading">
+
+        <h2>✨ Why BookMySeat?</h2>
+
+        <p>
+            Everything you need for a simple movie-booking experience.
+        </p>
+
+    </div>
+
+
+    <div class="row mb-5">
+
+        <div class="col-md-4 mb-3">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🔎
+                </div>
+
+                <h5>
+                    Discover Movies
+                </h5>
+
+                <p>
+                    Search and filter movies by genre, language,
+                    rating and other preferences.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    💺
+                </div>
+
+                <h5>
+                    Choose Your Seat
+                </h5>
+
+                <p>
+                    View available seats and select your preferred
+                    seats before booking.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🔐
+                </div>
+
+                <h5>
+                    Secure Booking
+                </h5>
+
+                <p>
+                    Protected booking and payment flow with
+                    temporary seat reservation.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const cards = document.querySelectorAll(".movie-card");
+
+    cards.forEach(function(card) {
+
+        card.addEventListener("mouseenter", function() {
+
+            card.style.cursor = "pointer";
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

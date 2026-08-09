@@ -31,9 +31,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
+    'bookmyshow-2fqo.onrender.com',
     'localhost',
-    '.vercel.app',
+    '127.0.0.1',
 ]
 
 
